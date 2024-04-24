@@ -30,7 +30,7 @@ RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules d
 
 ## Patched kernel
 # We're installing rt patch v6.6.20 since the built custom kernel is v6.6.21. This was the latest available custom kernel at time of writing.
-RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.6/patch-6.6.20-rt25.patch.gz
+RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6.20-rt25.patch.gz
 RUN gunzip patch-6.6.20-rt25.patch.gz
 RUN cat patch-6.6.20-rt25.patch | patch -p1
 RUN git checkout -b rtpatch && git add -A && git commit -m "RT patch"
