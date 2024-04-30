@@ -4,19 +4,20 @@ RUN apt-get update && \
 		apt-get upgrade -y && \
 		apt-get install -y sudo git bc bison flex libssl-dev make libc6-dev libncurses5-dev crossbuild-essential-arm64 wget kmod
 
-ARG USER_NAME=wannes
+# Username passed as build-arg
+ARG USER_NAME
 ARG UID=1000
 ARG GID=1000
 # TODO right mgmnt
-RUN addgroup --gid 1000 wannes
+RUN addgroup --gid 1000 ${USER_NAME} 
 RUN adduser --disabled-password --uid $UID --gid $GID --gecos "" ${USER_NAME}
 RUN newgrp sudo && \
 		usermod -aG sudo ${USER_NAME}
-USER wannes
+USER ${USER_NAME}
 
 # Get the kernel sources
-RUN mkdir -p /home/wannes/workspace
-WORKDIR /home/wannes/workspace
+RUN mkdir -p /home/${USER_NAME}/workspace
+WORKDIR /home/${USER_NAME}/workspace
 RUN git clone --depth=1 https://github.com/raspberrypi/linux
 WORKDIR linux
 ENV KERNEL=kernel_2712
@@ -29,7 +30,7 @@ RUN ./scripts/config --set-str CONFIG_LOCALVERSION "-v8-16k-stock"
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
 
 ## Patched kernel
-# We're installing rt patch v6.6.20 since the built custom kernel is v6.6.21. This was the latest available custom kernel and patch at time of writing.
+# We're installing rt patch v6.6.20 since the built custom kernel is v6.6.21. This was the latest available custom kernel and patch at time of benchmarking.
 RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6.20-rt25.patch.gz
 RUN gunzip patch-6.6.20-rt25.patch.gz
 RUN cat patch-6.6.20-rt25.patch | patch -p1 || echo done # used "echo done" to surpress the errors while patching. panic.c and printk.c weren't patched, is this normal?
@@ -45,12 +46,3 @@ RUN ./scripts/config \
 		--set-str CONFIG_LOCALVERSION "-v8-16k-rt"
 # Build the newly configured kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
-
-## Install kernel modules to SD
-#RUN sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD_PATH=/mnt/ext4 modules_install
-## Copy kernel and device Tree blobs to SD (backup in -original)
-#RUN sudo cp /mnt/fat32/$KERNEL.img /mnt/fat32/$KERNEL-backup.img
-#RUN sudo cp arch/arm64/boot/Image /mnt/fat32/$KERNEL.img
-#RUN sudo cp arch/arm64/boot/dts/broadcom/*.dtb /mnt/fat32/
-#RUN sudo cp arch/arm64/boot/dts/overlays/*.dtb* /mnt/fat32/overlays/
-#RUN sudo cp arch/arm64/boot/dts/overlays/README /mnt/fat32/overlays/
