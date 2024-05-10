@@ -2,3 +2,4 @@ cyclictest_custom.txt
 cyclictest_rt.txt
 .ipynb_checkpoints/
 venv/
+.idea/
