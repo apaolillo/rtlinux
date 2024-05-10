@@ -48,7 +48,7 @@ Run the following command on the external computer to start sending packets to t
 iperf3 -c <IP> -w 64K -P 100 -t 3800
 ```
 
-Notice that these packets will be sent out for a duration of 3800 seconds, so you only have 200 seconds aka 3 minutes to run the following command, after which the benchmarking proces begins. Afterwards, your results can be found in the specified cyclictest_X.txt file.
+Notice that these packets will be sent out for a duration of 3800 seconds, so you only have 200 seconds aka 3 minutes to run the following command, after which the benchmarking process begins. Afterwards, your results can be found in the specified cyclictest_X.txt file.
 
 ```
 sudo docker run --rm colinianking/stress-ng --all 1 -t1h 1> /dev/null &
