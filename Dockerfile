@@ -48,6 +48,7 @@ RUN ./scripts/config --set-str CONFIG_LOCALVERSION "-v8-16k-stock"
 # Build kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
 
+## Patched kernel
 RUN patch -p1 < /home/${USER_NAME}/workspace/patch/${PATCH_NAME}.patch
 RUN git checkout -b "rtpatch-${KERNEL_VERSION}" && git add -A && git commit -m "RT patch"
 # Apply regular configs + enable Fully Preemptive Kernel
