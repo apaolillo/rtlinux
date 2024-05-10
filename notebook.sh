@@ -4,7 +4,7 @@ set -ex
 host_ospert_dir=$(readlink -e ospert/)
 
 host_gen_dir=$(readlink -f ~/Dropbox/Applications/ShareLaTeX/ospert24_rtlinux_dewit/figures)
-[ -d "${host_gen_dir}" ] || host_gen_dir=/tmp/notebook_generated_figures
+[ -d "${host_gen_dir}" ] || host_gen_dir=$(readlink -f ./notebook_generated_figures)
 mkdir -p ${host_gen_dir}
 
 docker run \
