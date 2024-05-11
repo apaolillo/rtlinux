@@ -2,11 +2,13 @@
 
 This project was started in order to streamline our benchmarking practice for PREEMPT_RT Linux on the Raspberry Pi 5. 
 
-In order to reproduce the experiments yourself, first plug in a SD card where you want to load the OS for the Raspberry Pi on. Executing buildrun.sh will build the stock Linux kernel and the kernel patched with PREEMPT_RT that were used in our benchmarks. The script will also automatically copy the kernel images to your SD card if the correct path to the card was given.
+In order to reproduce the experiments yourself, first install Raspberry Pi OS Lite (Debian 12) to an SD card by following [these instructions](https://www.raspberrypi.com/software/). With the SD card still inserted, execute `./buildrun.sh` in order to build the stock Linux kernel and the kernel patched with PREEMPT_RT that were used in our benchmarks. The script will also automatically copy the kernel images to your SD card, if its name was correctly passed as an argument to the script.
+
+After inserting the SD card back into your Raspberry Pi and booting into the system, you can select which kernel to use by editing the Raspberry Pi's config.txt file. Reboot your system to load the selected kernel.
 
 ## Running the benchmarks
 
-After booting into the system on the Raspberry Pi, the following commands were used in order to benchmark the system. Be aware that running these commands will completely freeze your system for an hour.
+The following commands were used in order to benchmark the system. Be aware that running the benchmarks will completely freeze your system for an hour.
 
 ### Installing the tools
 
