@@ -11,10 +11,9 @@ With the SD card still inserted and the corresponding file systems mounted, exec
 ./deploykernels.sh <path_mounted_bootfs> <path_mounted_rootfs>
 ```
 
-This will build the docker image that build the stock Linux kernel and the kernel patched with
+This will build the docker image that builds the stock Linux kernel and the kernel patched with
 PREEMPT_RT that were used in our benchmarks.
-The script will also automatically copy the kernel images to your SD card, if its name was correctly
-passed as an argument to the script.
+The script will also automatically copy the kernel images to your SD card.
 
 After inserting the SD card back into your Raspberry Pi and booting into the system, you can select
 which kernel to use by editing the Raspberry Pi's `config.txt` file.
@@ -29,7 +28,7 @@ Mind that running the benchmarks will completely freeze the Raspberry Pi for one
 
 Cyclictest is part of the RT-Tests library:
 
-```
+```bash
 sudo apt update
 sudo apt upgrade -y
 sudo rpi-eeprom-update -a
@@ -43,7 +42,7 @@ sudo make install
 
 iperf3 will need to be installed on the Raspberry Pi and on the external computer sending the packets:
 
-```
+```bash
 sudo apt install iperf3
 ```
 
@@ -56,7 +55,7 @@ You will need an external computer for running the iperf3 networking stressors.
 This computer and the Raspberry Pi will need to be connected to the same network.
 Run the following command on your Raspberry Pi to set it up as an iperf3 server:
 
-```
+```bash
 iperf3 -s -D > iperf3log
 ```
 
@@ -65,15 +64,15 @@ iperf3 -s -D > iperf3log
 Run the following command on the external computer to start sending packets to the Raspberry Pi,
 fill in the IP of your Raspberry Pi:
 
-```
+```bash
 iperf3 -c <IP> -w 64K -P 100 -t 3800
 ```
 
 Notice that these packets will be sent out for a duration of 3800 seconds, so you only have 200
 seconds aka 3 minutes to run the following command, after which the benchmarking process begins.
-Afterward, your results can be found in the specified `cyclictest_X.txt` file.
+Afterwards, your results can be found in the specified `cyclictest_X.txt` file.
 
-```
+```bash
 sudo docker run --rm colinianking/stress-ng --all 1 -t1h 1> /dev/null &
 sudo cyclictest -vmn -i100 -p99 -t --duration=1h > cyclictest_X.txt
 ```
