@@ -1,10 +1,18 @@
 #!/bin/sh
 set -ex
 
+if [ -z "$1" ]
+  then
+		echo -n "Please enter the name of the inserted SD card: "
+		read cardname
+	else
+		cardname=$1
+fi
+
 TAG="buildrtlinux"
 DOCKER_USER="rtuser"
-SD_FAT="/media/${USER}/bootfs/"
-SD_EXT4="/media/${USER}/rootfs/"
+SD_FAT="/media/${cardname}/bootfs/"
+SD_EXT4="/media/${cardname}/rootfs/"
 
 #export BUILDKIT_PROGRESS=plain
 export DOCKER_BUILDKIT=0
