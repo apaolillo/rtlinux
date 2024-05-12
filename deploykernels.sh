@@ -1,5 +1,5 @@
 #!/bin/sh
-set -ex
+set -e
 
 bootfs=$1
 rootfs=$2

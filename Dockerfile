@@ -12,7 +12,9 @@ ARG GID=1000
 RUN addgroup --gid 1000 ${USER_NAME} 
 RUN adduser --disabled-password --uid $UID --gid $GID --gecos "" ${USER_NAME}
 RUN newgrp sudo && \
-		usermod -aG sudo ${USER_NAME}
+    usermod -aG sudo ${USER_NAME}
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/10-docker
 USER ${USER_NAME}
 
 # Configure git
@@ -54,11 +56,15 @@ RUN git checkout -b "rtpatch-${KERNEL_VERSION}" && git add -A && git commit -m "
 # Apply regular configs + enable Fully Preemptive Kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2712_defconfig
 RUN ./scripts/config \
-		--disable PREEMPT \
-		--enable PREEMPT_RT \
-		--enable RCU_BOOST \
-		--set-val RCU_BOOST_DELAY 500 \
-		--set-val COMPACT_UNEVICTABLE_DEFAULT 0 \
-		--set-str CONFIG_LOCALVERSION "-v8-16k-rt"
+        --disable PREEMPT \
+        --enable PREEMPT_RT \
+        --enable RCU_BOOST \
+        --set-val RCU_BOOST_DELAY 500 \
+        --set-val COMPACT_UNEVICTABLE_DEFAULT 0 \
+        --set-str CONFIG_LOCALVERSION "-v8-16k-rt"
 # Build the newly configured kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
+
+WORKDIR /home/${USER_NAME}/workspace
+COPY --chown=${USER_NAME}:${USER_NAME} copy-to-sd.sh .
+RUN mkdir -p /home/${USER_NAME}/workspace/sdcard
