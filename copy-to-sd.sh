@@ -17,8 +17,8 @@ sudo env PATH=$PATH make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- INSTALL_MOD
 
 ## Copy kernel and device Tree blobs to SD
 sudo cp ${sd_card_fs}/fat32/$KERNEL.img ${sd_card_fs}/fat32/$KERNEL-backup.img
-sudo cp /home/${USER}/kernels/${KERNEL}-stock.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-stock.img # TODO not tested, check if both images are correctly copied to sd card
-sudo cp /home/${USER}/kernels/${KERNEL}-rt.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-rt.img
+sudo cp ${HOME}/kernels/${KERNEL}-stock.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-stock.img # TODO not tested, check if both images are correctly copied to sd card
+sudo cp ${HOME}/kernels/${KERNEL}-rt.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-rt.img
 sudo cp arch/arm64/boot/dts/broadcom/*.dtb ${sd_card_fs}/fat32/
 sudo cp arch/arm64/boot/dts/overlays/*.dtb* ${sd_card_fs}/fat32/overlays/
 sudo cp arch/arm64/boot/dts/overlays/README ${sd_card_fs}/fat32/overlays/

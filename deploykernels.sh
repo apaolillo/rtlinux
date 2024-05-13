@@ -20,7 +20,7 @@ SD_FAT=$(readlink -e "${bootfs}")
 SD_EXT4=$(readlink -e "${rootfs}")
 
 docker run \
-    --volume "${SD_FAT}:/home/${DOCKER_USER}/workspace/linux/mnt/fat32" \
-    --volume "${SD_EXT4}:/home/${DOCKER_USER}/workspace/linux/mnt/ext4" \
+    --volume "${SD_FAT}:/home/${DOCKER_USER}/workspace/sdcard/fat32" \
+    --volume "${SD_EXT4}:/home/${DOCKER_USER}/workspace/sdcard/ext4" \
     "${DOCKER_TAG}" \
     ./copy-to-sd.sh
