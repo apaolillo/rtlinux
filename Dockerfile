@@ -30,6 +30,10 @@ WORKDIR /home/${USER_NAME}/workspace/linux
 # Commit of bumped kernel to 6.6.21:
 RUN git checkout fc59dcb071ed17605d39565d2ec02ae0917529fd
 ARG KERNEL_VERSION=6.6.21
+WORKDIR /home/${USER_NAME}/workspace
+RUN cp -a linux linux-rt
+RUN mv linux linux-stock
+WORKDIR /home/${USER_NAME}/workspace/linux-stock
 RUN git checkout -b "stock-${KERNEL_VERSION}"
 
 RUN mkdir -p /home/${USER_NAME}/workspace/patch
@@ -40,10 +44,10 @@ ARG PATCH_NAME=patch-${KERNEL_VERSION}-rt26
 RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.6/older/${PATCH_NAME}.patch.gz
 RUN gunzip ${PATCH_NAME}.patch.gz
 
-WORKDIR /home/${USER_NAME}/workspace/linux
 ENV KERNEL=kernel_2712
 
 ## Stock kernel
+WORKDIR /home/${USER_NAME}/workspace/linux-stock
 # Configs
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2712_defconfig
 RUN ./scripts/config --set-str CONFIG_LOCALVERSION "-v8-16k-stock"
@@ -54,6 +58,7 @@ RUN cp arch/arm64/boot/Image /home/${USER_NAME}/kernels/${KERNEL}-stock.img
 
 
 ## Patched kernel
+WORKDIR /home/${USER_NAME}/workspace/linux-rt
 RUN patch -p1 < /home/${USER_NAME}/workspace/patch/${PATCH_NAME}.patch
 RUN git checkout -b "rtpatch-${KERNEL_VERSION}" && git add -A && git commit -m "RT patch"
 # Apply regular configs + enable Fully Preemptive Kernel
