@@ -53,9 +53,6 @@ RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2712_defconf
 RUN ./scripts/config --set-str CONFIG_LOCALVERSION "-v8-16k-stock"
 # Build kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
-RUN mkdir /home/${USER_NAME}/kernels
-RUN cp arch/arm64/boot/Image /home/${USER_NAME}/kernels/${KERNEL}-stock.img
-
 
 ## Patched kernel
 WORKDIR /home/${USER_NAME}/workspace/linux-rt
@@ -72,7 +69,6 @@ RUN ./scripts/config \
         --set-str CONFIG_LOCALVERSION "-v8-16k-rt"
 # Build the newly configured kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
-RUN cp arch/arm64/boot/Image /home/${USER_NAME}/kernels/${KERNEL}-rt.img
 
 WORKDIR /home/${USER_NAME}/workspace
 COPY --chown=${USER_NAME}:${USER_NAME} copy-to-sd.sh .
