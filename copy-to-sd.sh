@@ -22,8 +22,8 @@ if [ -f "${sd_card_fs}/fat32/$KERNEL.img" ]
 then
   sudo cp ${sd_card_fs}/fat32/$KERNEL.img ${sd_card_fs}/fat32/$KERNEL-backup.img
 fi
-sudo cp ${HOME}/kernels/${KERNEL}-stock.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-stock.img # TODO not tested, check if both images are correctly copied to sd card
-sudo cp ${HOME}/kernels/${KERNEL}-rt.img ${sd_card_fs}/fat32/$KERNEL-v8-16k-rt.img
+sudo cp ${HOME}/workspace/linux-stock/arch/arm64/boot/Image ${sd_card_fs}/fat32/$KERNEL-v8-16k-stock.img
+sudo cp ${HOME}/workspace/linux-rt/arch/arm64/boot/Image ${sd_card_fs}/fat32/$KERNEL-v8-16k-rt.img
 sudo cp arch/arm64/boot/dts/broadcom/*.dtb ${sd_card_fs}/fat32/
 if [ ! -d "${sd_card_fs}/fat32/overlays/" ]
 then
