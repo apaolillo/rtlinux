@@ -44,12 +44,18 @@ ARG PATCH_NAME=patch-${KERNEL_VERSION}-rt26
 RUN wget https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/6.6/older/${PATCH_NAME}.patch.gz
 RUN gunzip ${PATCH_NAME}.patch.gz
 
-ENV KERNEL=kernel_2712
+# Rpi5
+# ENV KERNEL=kernel_2712
+# ENV DEFCONFIG=bcm2712_defconfig
+
+# Rpi4
+ENV KERNEL=kernel8
+ENV DEFCONFIG=bcm2711_defconfig
 
 ## Stock kernel
 WORKDIR /home/${USER_NAME}/workspace/linux-stock
 # Configs
-RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2712_defconfig
+RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- ${DEFCONFIG}
 RUN ./scripts/config --set-str CONFIG_LOCALVERSION "-v8-16k-stock"
 # Build kernel
 RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- Image modules dtbs
@@ -59,7 +65,7 @@ WORKDIR /home/${USER_NAME}/workspace/linux-rt
 RUN patch -p1 < /home/${USER_NAME}/workspace/patch/${PATCH_NAME}.patch
 RUN git checkout -b "rtpatch-${KERNEL_VERSION}" && git add -A && git commit -m "RT patch"
 # Apply regular configs + enable Fully Preemptive Kernel
-RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2712_defconfig
+RUN make -j $(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- ${DEFCONFIG}
 RUN ./scripts/config \
         --disable PREEMPT \
         --enable PREEMPT_RT \
